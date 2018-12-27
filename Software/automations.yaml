@@ -1,0 +1,13 @@
+- id: '1545624738536'
+  alias: GDoor_Notify
+  trigger:
+  - platform: mqtt
+    topic: ha/Gsense
+  condition:
+  - condition: template
+    value_template: '{{ trigger.payload_json.Status == "Open" }}'
+  action:
+  - service: notify.gdoor_notify
+    data:
+      title: 'Garage Door Open'
+      message: 'Garage Door Has Opened'

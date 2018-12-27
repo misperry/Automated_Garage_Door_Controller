@@ -1,0 +1,54 @@
+sensor 1:
+  platform: mqtt
+  state_topic: "ha/Gsense"
+  name: Garage Door Status
+  value_template: '{{ value_json.Status }}'
+
+switch:
+  - platform: mqtt
+    name: "Garage Door"
+    state_topic: "ha/GDoor"
+    command_topic: "ha/GDoor"
+    qos: 0
+    payload_on: "ON"
+    payload_off: "OFF"
+    optimistic:
+    retain: false
+
+    - platform: mqtt
+    name: "Garage Light"
+    state_topic: "ha/GLight"
+    command_topic: "ha/GLight"
+    qos: 0
+    payload_on: "ON"
+    payload_off: "OFF"
+    optimistic:
+    retain: false
+
+scene:
+  - name: Garage Door
+    entities:
+      switch.Garage_Door: true
+  
+  - name: Garage Light
+    entities:
+      switch.Garage_Light: true
+
+notify:
+  - name: gdoor_notify
+    platform: smtp
+    server: smtp.gmail.com
+    port: 587
+    timeout: 15
+    sender: !secret email_addr
+    encryption: starttls
+    username: !secret email_addr
+    password: !secret gmail_pass
+    recipient:
+      - somenumber@tmomail.net
+      - somenumber@vtext.com
+    sender_name: Home Assistant
+    
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
